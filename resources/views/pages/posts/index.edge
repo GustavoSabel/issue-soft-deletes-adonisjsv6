@@ -11,51 +11,43 @@
       background-color: #f2f2f2;
     }
 
-    nav {
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
+    .button-new-post {
+      margin-bottom: 20px;
     }
 
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      margin-right: 10px;
-    }
-
-    table {
+    .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
     }
 
-    th, td {
+    .table th,
+    .table td {
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
     }
 
-    th {
-      background-color: #333;
+    .button-delete {
+      background-color: #ff0000;
       color: #fff;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-  <nav>
-    <a href="/posts/create">New Post</a>
-  </nav>
-  <br/>
+  <div class="button-new-post">
+    <a href="{{ route('posts.create') }}">New Post</a>
+  </div>
   <table>
     <thead>
       <tr>
         <th>Title</th>
         <th>Content</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -63,6 +55,12 @@
         <tr>
           <td>{{ post.title }}</td>
           <td>{{ post.content }}</td>
+          <td>
+            <form action="{{ route('posts.destroy', [ post.id ], { qs: { _method: 'DELETE' } }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="button-delete">Delete</button>
+            </form>
+          </td>
         </tr>
       @endeach
     </tbody>

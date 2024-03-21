@@ -16,8 +16,8 @@ export default class PostsController {
     ctx.response.redirect().toRoute('/posts')
   }
 
-  async show() {
-    throw new Error('Not implemented')
+  async show({ view, params }: HttpContext) {
+    return await view.render('pages/posts/show', { post: await Post.find(params.id) })
   }
 
   async edit() {
@@ -28,7 +28,9 @@ export default class PostsController {
     throw new Error('Not implemented')
   }
 
-  async destroy() {
-    throw new Error('Not implemented')
+  async destroy(ctx: HttpContext) {
+    const post = await Post.findOrFail(ctx.params.id)
+    await post.delete()
+    ctx.response.redirect().toRoute('/posts')
   }
 }
