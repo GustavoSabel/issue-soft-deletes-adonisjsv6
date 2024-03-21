@@ -1,5 +1,6 @@
 import Post from '#models/post'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class PostsController {
   async index({ view }: HttpContext) {
@@ -12,8 +13,10 @@ export default class PostsController {
 
   async store(ctx: HttpContext) {
     const data = ctx.request.only(['title', 'content'])
-    await Post.create(data)
-    ctx.response.redirect().toRoute('/posts')
+    const post = await db.transaction(async (trx) => {
+      return await new Post().fill(data).useTransaction(trx).save()
+    })
+    ctx.response.redirect().toRoute('posts.show', { id: post.id })
   }
 
   async show({ view, params }: HttpContext) {
